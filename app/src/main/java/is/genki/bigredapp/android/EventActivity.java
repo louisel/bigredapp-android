@@ -8,10 +8,12 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.format.DateUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewManager;
 import android.widget.Button;
@@ -31,6 +33,7 @@ import java.util.Date;
 public class EventActivity extends ActionBarActivity {
 
     public static final String KEY_TITLE = "EventActivity.TITLE";
+    public static final String KEY_DATE_STRING = "EventActivity.DATE_STRING";
     public static final String KEY_LINK = "EventActivity.LINK";
     public static final String KEY_MEDIA = "EventActivity.MEDIA";
     public static final String KEY_DESCRIPTION = "EventActivity.DESCRIPTION";
@@ -49,14 +52,9 @@ public class EventActivity extends ActionBarActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
 
-            //Find and parse title
-            String title = extras.getString(KEY_TITLE);
-            String formatTitle = "";
-            if(title != null) {
-                setTitle(title.substring(0, title.indexOf(":")));
-                formatTitle = title.substring(title.indexOf(":") + 1, title.length()).trim();
-                ((TextView) findViewById(R.id.title)).setText(formatTitle);
-            }
+            setTitle(extras.getString(KEY_DATE_STRING));
+            final String tempTitle = extras.getString(KEY_TITLE);
+            ((TextView) findViewById(R.id.title)).setText(tempTitle);
 
             //Find and sanitize description
             String description = Html.fromHtml(extras.getString(KEY_DESCRIPTION)).toString();
@@ -67,7 +65,6 @@ public class EventActivity extends ActionBarActivity {
             final String lon = extras.getString(KEY_LONGITUDE);
             Button b = (Button) findViewById(R.id.map);
 
-            final String tempTitle = formatTitle;
 
             if(lat != null){
                 b.setOnClickListener(new View.OnClickListener() {
@@ -153,6 +150,17 @@ public class EventActivity extends ActionBarActivity {
            if(this.exception != null) this.exception.printStackTrace();
             ((ImageView) findViewById(R.id.imageView)).setImageDrawable(d);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }
